@@ -1,46 +1,61 @@
-import React from 'react';
-import { useState } from 'react';
+// App.js
+
+import React, { useState } from 'react';
+import  analyzeImage from './azure-image-analysis';
 
 function App() {
-const [input, setInput] = useState("");
+  const [imageUrl, setImageUrl] = useState('');
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
+  const handleImageUrlChange = (event) => {
+    setImageUrl(event.target.value);
+  };
 
+  const handleAnalyzeClick = async () => {
+    setIsLoading(true);
 
-const handleInputChange = (e) => { 
-  setInput(e.target.value);
-}
+    try {
+      const result = await analyzeImage(imageUrl);
+      setAnalysisResult(result);
+    } catch (error) {
+      console.error('Error analyzing image:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-const handleAnalysisButtonClick = () => { 
-  // Add code here to analyze the image
-  console.log("Analyzing image: ", input);
-}
+  const DisplayResults = () => {
+    if (!analysisResult) {
+      return null;
+    }
 
-const handleGenerationButtonClick = () => { 
-  // Add code here to generate an image
-  console.log("Generating image: ", input);
-}
+    return (
+      <div>
+        <h2>Analysis Results</h2>
+        <p>Image URL: {imageUrl}</p>
+        <pre>{JSON.stringify(analysisResult, null, 2)}</pre>
+      </div>
+    );
+  };
 
   return (
-    <div> 
-    
-      <h1>Computer Vision</h1>
+    <div>
+      <h1>Image Analysis App</h1>
 
-      <label htmlFor="imageUrl">Enter the image URL or Prompt:</label>
-      <input 
-      type="text" 
-      id="imageUrl"
-      value={input}
-      onChange={handleInputChange}
-      />
+      <label htmlFor="imageUrl">Enter Image URL:</label>
+      <input type="text" id="imageUrl" value={imageUrl} onChange={handleImageUrlChange} />
 
-      <br />
+      <button onClick={handleAnalyzeClick} disabled={isLoading}>
+        Analyze
+      </button>
 
-      <button onClick={handleAnalysisButtonClick}>Analyse Image</button>
-      <button onClick={handleGenerationButtonClick}>Generate image</button>
-    
+      {isLoading && <p>Processing...</p>}
+
+      <DisplayResults />
     </div>
-
-  )
+  );
 }
 
 export default App;
+
