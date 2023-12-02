@@ -1,9 +1,11 @@
 // azure-image-analysis.js
 
 import axios from 'axios';
+require('dotenv').config();
+
 
 const analyzeImage = async (imageUrl, visualFeatures = 'Categories,Description,Color') => {
-  const apiKey = '7e088790d7da412c939e1edd786fd2ef'; // Replace with your Azure AI key
+  const apiKey = process.env.KEY_NAME; // Replace with your Azure AI key
   const endpoint = 'https://perritos.cognitiveservices.azure.com/vision/v3.0/analyze';
 
   try {
@@ -24,6 +26,7 @@ const analyzeImage = async (imageUrl, visualFeatures = 'Categories,Description,C
     throw error;
   }
 };
+
 
 export default analyzeImage;
 

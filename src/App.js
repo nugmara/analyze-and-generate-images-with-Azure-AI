@@ -1,15 +1,20 @@
 // App.js
 
 import React, { useState } from 'react';
-import  analyzeImage from './azure-image-analysis';
+import  {analyzeImage} from './azure-image-analysis';
 
 function App() {
   const [imageUrl, setImageUrl] = useState('');
+  const [input, setInput] = useState('');
   const [analysisResult, setAnalysisResult] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleImageUrlChange = (event) => {
     setImageUrl(event.target.value);
+  };
+
+  const handleInputChange = (event) => {
+    setInput(event.target.value);
   };
 
   const handleAnalyzeClick = async () => {
@@ -20,6 +25,21 @@ function App() {
       setAnalysisResult(result);
     } catch (error) {
       console.error('Error analyzing image:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGenerationButtonClick = async () => {
+    setIsLoading(true);
+
+    try {
+      // Add code for image generation here
+      // await generateImage(input);
+      console.log('Image generated for prompt:', input);
+      // You might want to do something with the generated image, like displaying it
+    } catch (error) {
+      console.error('Error generating image:', error);
     } finally {
       setIsLoading(false);
     }
@@ -43,16 +63,23 @@ function App() {
     <div>
       <h1>Image Analysis App</h1>
 
-      <label htmlFor="imageUrl">Enter Image URL:</label>
-      <input type="text" id="imageUrl" value={imageUrl} onChange={handleImageUrlChange} />
+<label htmlFor="imageUrl">Enter Image URL:</label>
+<input type="text" id="imageUrl" value={imageUrl} onChange={handleImageUrlChange} />
 
-      <button onClick={handleAnalyzeClick} disabled={isLoading}>
-        Analyze
-      </button>
+<label htmlFor="prompt">Enter Prompt:</label>
+<input type="text" id="prompt" value={input} onChange={handleInputChange} />
 
-      {isLoading && <p>Processing...</p>}
+<button onClick={handleAnalyzeClick} disabled={isLoading}>
+  Analyze
+</button>
 
-      <DisplayResults />
+<button onClick={handleGenerationButtonClick} disabled={isLoading}>
+  Generate Image
+</button>
+
+{isLoading && <p>Processing...</p>}
+
+<DisplayResults />
     </div>
   );
 }
